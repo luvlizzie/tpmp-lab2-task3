@@ -100,3 +100,72 @@ void sort_by_price(Tovar *spisok, int count) {
     printf("Goods sorted by price (ascending).\n");
 }
 
+/*
+ * Function: print_old_goods
+ * -------------------------
+ * Выводит товары, поступившие более 10 месяцев назад
+ * 
+ *   spisok: массив товаров
+ *   count: количество товаров
+ */
+void print_old_goods(const Tovar *spisok, int count) {
+    Date current;
+    get_current_date(&current);
+    int found = 0;
+    
+    printf("\n--- Goods received more than 10 months ago ---\n");
+    
+    for (int i = 0; i < count; i++) {
+        // Вычисляем разницу в месяцах
+        int months_diff = (current.year - spisok[i].receipt_date.year) * 12 +
+                          (current.month - spisok[i].receipt_date.month);
+        
+        // Корректировка по дням
+        if (current.day < spisok[i].receipt_date.day) {
+            months_diff--;
+        }
+        
+        if (months_diff > 10) {
+            printf("Goods: %s\n", spisok[i].name);
+            printf("  Quantity: %d\n", spisok[i].quantity);
+            printf("  Price: %.2f\n", spisok[i].price);
+            printf("  Receipt date: %d-%02d-%02d\n",
+                   spisok[i].receipt_date.year,
+                   spisok[i].receipt_date.month,
+                   spisok[i].receipt_date.day);
+            printf("  Months since receipt: %d\n", months_diff);
+            printf("  ---\n");
+            found = 1;
+        }
+    }
+    
+    if (!found) {
+        printf("No goods received more than 10 months ago.\n");
+    }
+}
+
+/*
+ * Function: print_all_goods
+ * -------------------------
+ * Вспомогательная функция для вывода всех товаров
+ * 
+ *   spisok: массив товаров
+ *   count: количество товаров
+ */
+void print_all_goods(const Tovar *spisok, int count) {
+    if (count == 0) {
+        printf("No goods in the list.\n");
+        return;
+    }
+    
+    printf("\n--- All goods ---\n");
+    for (int i = 0; i < count; i++) {
+        printf("%d. %s\n", i + 1, spisok[i].name);
+        printf("   Quantity: %d\n", spisok[i].quantity);
+        printf("   Price: %.2f\n", spisok[i].price);
+        printf("   Receipt date: %d-%02d-%02d\n",
+               spisok[i].receipt_date.year,
+               spisok[i].receipt_date.month,
+               spisok[i].receipt_date.day);
+    }
+}
